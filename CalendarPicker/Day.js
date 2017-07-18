@@ -1,3 +1,4 @@
+
 import React, { PropTypes } from 'react';
 import {
   View,
@@ -17,15 +18,21 @@ export default function Day(props) {
     selectedEndDate,
     allowRangeSelection,
     textStyle,
+    occupiedDates,
     minDate,
     maxDate,
   } = props;
+
+  console.log('occupiedDates', occupiedDates)
 
   const thisDay = new Date(year, month, day);
   const today = new Date();
   today.setHours(0,0,0,0);
 
   let dateOutOfRange = false;
+  let dateIsOccupiedMiddle = false;
+  // let dateIsOccupiedStart = false;
+  // let dateIsOccupiedEnd = false;
   let daySelectedStyle = {};
   let selectedDayColorStyle = {};
   let dateType;
@@ -39,9 +46,22 @@ export default function Day(props) {
 
   if (maxDate) {
     if (thisDay > maxDate) {
-      dateOutOfRange = true;
+      dateOutOfRange  = true;
     }
   }
+
+  occupiedDates.map((dates) => {
+    if (dates.start <= thisDay && dates.end >= thisDay) {
+      dateIsOccupiedMiddle = true
+    }
+    // if (dates.start === thisDay) {
+    //   dateIsOccupiedStart = true
+    // }
+    // if (dateIsOccupiedEnd === thisDay) {
+    //   dateIsOccupiedEnd = true
+    // }
+  })
+
 
   // If date is not out of range let's apply styles
   if (!dateOutOfRange) {
@@ -50,6 +70,18 @@ export default function Day(props) {
       daySelectedStyle = styles.selectedToday;
       selectedDayColorStyle = styles.selectedDayLabel;
     }
+    if (dateIsOccupiedMiddle) {
+      daySelectedStyle = styles.occupiedDayMiddle;
+      selectedDayColorStyle = styles.occupiedDayLabel;
+    }
+    // if (dateIsOccupiedEnd) {
+    //   daySelectedStyle = styles.occupiedDayEnd;
+    //   selectedDayColorStyle = styles.occupiedDayLabel;
+    // }
+    // if (dateIsOccupiedStart) {
+    //   daySelectedStyle = styles.occupiedDayStart;
+    //   selectedDayColorStyle = styles.occupiedDayLabel;
+    // }
 
     // set selected day style
     if (!allowRangeSelection &&

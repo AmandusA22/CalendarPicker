@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import {
   View,
@@ -24,66 +25,40 @@ export default class CalendarPicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      initialDate: null,
       currentMonth: null,
       currentYear: null,
       selectedStartDate: null,
       selectedEndDate: null,
       styles: {},
     };
-    this.updateScaledStyles = this.updateScaledStyles.bind(this);
-    this.updateMonthYear = this.updateMonthYear.bind(this);
     this.handleOnPressPrevious = this.handleOnPressPrevious.bind(this);
     this.handleOnPressNext = this.handleOnPressNext.bind(this);
     this.handleOnPressDay = this.handleOnPressDay.bind(this);
     this.onSwipe = this.onSwipe.bind(this);
   }
 
-  static defaultProps = {
-    initialDate: new Date(),
-    scaleFactor: 375,
-  }
-
   componentWillMount() {
-    this.setState({...this.updateScaledStyles(this.props), ...this.updateMonthYear(this.props)});
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let newStyles = {};
-    if (nextProps.width !== this.props.width ||
-        nextProps.height !== this.props.height)
-    {
-      newStyles = this.updateScaledStyles(nextProps);
-    }
-
-    let newMonthYear = {}
-    if (nextProps.initialDate.getTime() !== this.props.initialDate.getTime()) {
-      this.updateMonthYear(nextProps, {});
-    }
-
-    this.setState({...newStyles, ...newMonthYear});
-  }
-
-  updateScaledStyles(props) {
     const {
       scaleFactor,
+      initialDate,
       selectedDayColor,
       selectedDayTextColor,
       todayBackgroundColor,
-      width, height,
-    } = props;
+    } = this.props;
 
     // The styles in makeStyles are intially scaled to this width
-    const containerWidth = width ? width : Dimensions.get('window').width;
-    const containerHeight = height ? height : Dimensions.get('window').height;
-    const initialScale = Math.min(containerWidth, containerHeight) / scaleFactor;
-    return {styles: makeStyles(initialScale, selectedDayColor, selectedDayTextColor, todayBackgroundColor)};
-  }
+    const deviceWidth = Dimensions.get('window').width;
+    const initialScale = scaleFactor? deviceWidth / scaleFactor : deviceWidth / 375;
+    const styles = makeStyles(initialScale, selectedDayColor, selectedDayTextColor, todayBackgroundColor);
+    const date = initialDate ? initialDate : new Date();
 
-  updateMonthYear(props) {
-    return {
-      currentMonth: parseInt(props.initialDate.getMonth()),
-      currentYear: parseInt(props.initialDate.getFullYear()),
-    };
+    this.setState({
+      initialDate: date,
+      currentMonth: parseInt(date.getMonth()),
+      currentYear: parseInt(date.getFullYear()),
+      styles,
+    });
   }
 
   handleOnPressDay(day, type) {
@@ -169,6 +144,7 @@ export default class CalendarPicker extends Component {
 
   render() {
     const {
+      initialDate,
       currentMonth,
       currentYear,
       selectedStartDate,
@@ -179,7 +155,6 @@ export default class CalendarPicker extends Component {
     const {
       allowRangeSelection,
       startFromMonday,
-      initialDate,
       minDate,
       maxDate,
       weekdays,
@@ -187,6 +162,7 @@ export default class CalendarPicker extends Component {
       previousTitle,
       nextTitle,
       textStyle,
+      occupiedDates,
     } = this.props;
 
     return (
@@ -221,6 +197,7 @@ export default class CalendarPicker extends Component {
             startFromMonday={startFromMonday}
             allowRangeSelection={allowRangeSelection}
             selectedStartDate={selectedStartDate}
+            occupiedDates={occupiedDates}
             selectedEndDate={selectedEndDate}
             minDate={minDate && minDate.setHours(0,0,0,0)}
             maxDate={maxDate && maxDate.setHours(0,0,0,0)}

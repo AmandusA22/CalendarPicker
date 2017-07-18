@@ -1,3 +1,5 @@
+
+
 import React, { PropTypes } from 'react';
 import uuid from 'uuid';
 import {
@@ -16,6 +18,7 @@ export default function DaysGridView(props) {
     onPressDay,
     startFromMonday,
     selectedStartDate,
+    occupiedDates,
     selectedEndDate,
     allowRangeSelection,
     textStyle,
@@ -23,6 +26,7 @@ export default function DaysGridView(props) {
     maxDate,
   } = props;
   const today = new Date();
+  console.log('in daysgrid')
   // let's get the total of days in this month, we need the year as well, since
   // leap years have different amount of days in February
   const totalDays = Utils.getDaysInMonth(month, year);
@@ -53,6 +57,7 @@ export default function DaysGridView(props) {
                 selectedStartDate={selectedStartDate}
                 selectedEndDate={selectedEndDate}
                 allowRangeSelection={allowRangeSelection}
+                occupiedDates={occupiedDates}
                 minDate={minDate}
                 maxDate={maxDate}
                 textStyle={textStyle}
@@ -78,6 +83,7 @@ export default function DaysGridView(props) {
               year={year}
               styles={styles}
               onPressDay={onPressDay}
+              occupiedDates={occupiedDates}
               selectedStartDate={selectedStartDate}
               selectedEndDate={selectedEndDate}
               allowRangeSelection={allowRangeSelection}
