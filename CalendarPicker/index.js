@@ -72,9 +72,26 @@ export default class CalendarPicker extends Component {
     const {
       allowRangeSelection,
       onDateChange,
+      occupiedDates
     } = this.props;
 
     const date = new Date(currentYear, currentMonth, day);
+
+    const canDayBeChoosen = occupiedDates.reduce((value, dates) => {
+      console.log(dates);
+      console.log(value);
+      console.log('date',date);
+      console.log('dates', dates.start);
+      console.log('dates', dates.end);
+      if (date >= new Date(dates.start) && date <= new Date(dates.end)) {
+        return false;
+      }
+      return value;
+    }, true);
+
+    if (!canDayBeChoosen) {
+      return;
+    }
 
     if (allowRangeSelection &&
         selectedStartDate &&
